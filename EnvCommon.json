@@ -15,6 +15,7 @@
   "variables": {  },
   "functions": [  ],
   "resources": [ 
+
     {
       "name": "[parameters('StorageAccount').name]",
       "type": "Microsoft.Storage/storageAccounts",
@@ -38,13 +39,13 @@
           "keySource": "[parameters('StorageAccount').keySource]",
           "keyvaultproperties": {
             "keyname": "[parameters('StorageAccount').keyname]",
-            "keyversion": "[parameters('StorageAccount').keyversion]",
             "keyvaulturi": "[parameters('StorageAccount').keyvaulturi]"
           }
         },
         "supportsHttpsTrafficOnly": "[parameters('StorageAccount').supportsHttpsTrafficOnly]"
       }
     },
+
     {
       "name": "[parameters('EnvKeyvault').name]",
       "type": "Microsoft.KeyVault/vaults",
