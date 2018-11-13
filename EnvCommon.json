@@ -1,0 +1,81 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0",
+  "parameters": { 
+    "StorageAccount": {
+      "type": "object"
+    },
+    "EnvKeyvault": {
+      "type": "object"
+    },
+    "AccessPolicy": {
+      "type": "object"
+    }
+  },
+  "variables": {  },
+  "functions": [  ],
+  "resources": [ 
+    {
+      "name": "[parameters('StorageAccount').name]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2018-07-01",
+      "sku": {
+        "name": "[parameters('StorageAccount').skuName]"
+      },
+      "kind": "[parameters('StorageAccount').kind]",
+      "location": "[parameters('StorageAccount').location]",
+      "tags": {},
+      "properties": {
+        "encryption": {
+          "services": {
+            "blob": {
+              "enabled": "[parameters('StorageAccount').blobEncryption]"
+            },
+            "file": {
+              "enabled": "[parameters('StorageAccount').fileEncryption]"
+            }
+          },
+          "keySource": "[parameters('StorageAccount').keySource]",
+          "keyvaultproperties": {
+            "keyname": "[parameters('StorageAccount').keyname]",
+            "keyversion": "[parameters('StorageAccount').keyversion]",
+            "keyvaulturi": "[parameters('StorageAccount').keyvaulturi]"
+          }
+        },
+        "supportsHttpsTrafficOnly": "[parameters('StorageAccount').supportsHttpsTrafficOnly]"
+      }
+    },
+    {
+      "name": "[parameters('EnvKeyvault').name]",
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2018-02-14",
+      "location": "[parameters('EnvKeyvault').location]",
+      "tags": {},
+      "properties": {
+        "tenantId": "[parameters('EnvKeyvault').tenantId]",
+        "sku": {
+          "family": "A",
+          "name": "[parameters('EnvKeyvault').skuName]"
+        },
+        "accessPolicies": [
+          {
+            "tenantId": "[parameters('AccessPolicy').tenantId]",
+            "objectId": "[parameters('AccessPolicy').objectId]",
+            "permissions": "[parameters('AccessPolicy').permissions]"
+          }
+        ],
+        "enabledForDeployment": "[parameters('EnvKeyvault').enabledForDeployment]",
+        "enabledForTemplateDeployment": "[parameters('EnvKeyvault').enabledForTemplateDeployment]",
+        "enableSoftDelete": "[parameters('EnvKeyvault').enableSoftDelete]",
+        "enablePurgeProtection": "[parameters('EnvKeyvault').enablePurgeProtection]"
+      },
+      "resources": []
+    }
+  ],
+  "outputs": { 
+    "RGName": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    }
+   }
+}
